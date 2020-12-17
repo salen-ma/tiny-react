@@ -1,6 +1,13 @@
 import mountNativeElement from "./mountNativeElement"
+import isFunction from "./isFunction"
+import mountComponent from "./mountComponent"
 
-// 渲染真实 DOM
 export default function mountElement (virtualDOM, container) {
-  mountNativeElement(virtualDOM, container)
+  if (isFunction(virtualDOM)) {
+    // 渲染组件
+    mountComponent(virtualDOM, container, oldDOM)
+  } else {
+    // 渲染真实 DOM
+    mountNativeElement(virtualDOM, container, oldDOM)
+  }
 }
