@@ -2,7 +2,7 @@ import isFunctionComponent from "./isFunctionComponent"
 import mountNativeElement from "./mountNativeElement"
 import isFunction from "./isFunction"
 
-export default function mountComponent(virtualDOM, container, oldDOM) {
+export default function mountComponent(virtualDOM, container) {
   let nextVirtualDOM = null
   let component = null
   if (isFunctionComponent(virtualDOM)) {
@@ -14,15 +14,9 @@ export default function mountComponent(virtualDOM, container, oldDOM) {
     component = nextVirtualDOM.component
   }
   if (isFunction(nextVirtualDOM)) {
-    mountComponent(nextVirtualDOM, container, oldDOM)
+    mountComponent(nextVirtualDOM, container)
   } else {
-    mountNativeElement(nextVirtualDOM, container, oldDOM)
-  }
-  if (component) {
-    component.componentDidMount()
-    if (component.props && component.props.ref) {
-      component.props.ref(component)
-    }
+    mountNativeElement(nextVirtualDOM, container)
   }
 }
 
