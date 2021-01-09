@@ -9,21 +9,45 @@ const isValueOrChecked = (propName) => {
 }
 
 // 为 DOM 添加属性
-export default function updateNodeElement (newElement, virtualDOM) {
-  const newProps = virtualDOM.props
+export default function updateNodeElement (newElement, virtualDOM, oldVirtualDOM = {}) {
+  const newProps = virtualDOM.props || {}
+  const oldProps = oldVirtualDOM.props || {}
   Object.keys(newProps).forEach(propName => {
     const newPropsValue = newProps[propName]
-    // 事件属性
-    if (isEventProps(propName)) {
-      const eventName = propName.toLowerCase().slice(2)
-      newElement.addEventListener(eventName, newPropsValue)
-    } else if (isValueOrChecked(propName)) {
-      newElement[propName] = newPropsValue
-    } else if (propName !== 'children') {
-      if (propName === 'className') {
-        newElement.setAttribute('class', newPropsValue)
-      } else {
-        newElement.setAttribute(propName, newPropsValue)
+    const oldPropsValue = oldProps[propName]
+
+    if (newPropsValue !== oldPropsValue) {
+      // 事件属性
+      if (isEventProps(propName)) {
+        const eventName = propName.toLowerCase().slice(2)
+        newElement.addEventListener(eventName, newPropsValue)
+        // 卸载旧事件
+        if (oldPropsValue) {
+          newElement.removeEventListener(eventName, oldPropsValue)
+        }
+      } else if (isValueOrChecked(propName)) {
+        newElement[propName] = newPropsValue
+      } else if (propName !== 'children') {
+        if (propName === 'className') {
+          newElement.setAttribute('class', newPropsValue)
+        } else {
+          newElement.setAttribute(propName, newPropsValue)
+        }
+      }
+    }
+  })
+
+  // 有属性被删除
+  Object.keys(oldProps).forEach(propName => {
+    const newPropsValue = newProps[propName]
+    const oldPropsValue = oldProps[propName]
+    if (!newPropsValue) {
+      // 属性被删除
+      if (isEventProps(propName)) {
+        const eventName = propName.toLowerCase().slice(2)
+        newElement.removeEventListener(eventName, oldPropsValue)
+      } else if (propName !== 'children') {
+        newElement.removeAttribute(propName)
       }
     }
   })
