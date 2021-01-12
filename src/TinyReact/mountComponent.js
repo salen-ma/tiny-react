@@ -13,6 +13,14 @@ export default function mountComponent(virtualDOM, container, oldDOM) {
     nextVirtualDOM = buildClassComponent(virtualDOM)
     component = nextVirtualDOM.component
   }
+
+  if (component) {
+    component.componentDidMount()
+    if (component.props && component.props.ref) {
+      component.props.ref(component)
+    }
+  }
+
   if (isFunction(nextVirtualDOM)) {
     mountComponent(nextVirtualDOM, container, oldDOM)
   } else {

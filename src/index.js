@@ -98,8 +98,34 @@ class Alert extends TinyReact.Component {
   }
 }
 
-TinyReact.render(<Alert name="张三" age={20} />, root)
-setTimeout(() => {
-  // TinyReact.render(<Heart title="Hello React" />, root)
-  TinyReact.render(<Alert name="张三" age={40} />, root)
-}, 2000)
+// TinyReact.render(<Alert name="张三" age={20} />, root)
+// setTimeout(() => {
+//   // TinyReact.render(<Heart title="Hello React" />, root)
+//   TinyReact.render(<Alert name="张三" age={40} />, root)
+// }, 2000)
+
+class DemoRef extends TinyReact.Component {
+  constructor(props) {
+    super(props)
+    this.handleClick = this.handleClick.bind(this)
+  }
+  componentDidMount() {
+    console.log("componentDidMount")
+  }
+  
+  handleClick() {
+    console.log(this.input.value)
+    console.log(this.alert)
+  }
+  render() {
+    return (
+      <div>
+        <input type="text" ref={input => (this.input = input)} />
+        <button onClick={this.handleClick}>按钮</button>
+        <Alert ref={alert => (this.alert = alert)} name="张三" age={20} />
+      </div>
+    )
+  }
+}
+
+TinyReact.render(<DemoRef />, root)
